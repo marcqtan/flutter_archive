@@ -172,7 +172,7 @@ public class SwiftFlutterArchivePlugin: NSObject, FlutterPlugin {
             try self.unzipItemAndReportProgress(at: sourceURL, to: destinationURL, jobId: jobId!)
           } else {
             try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.unzipItem(at: sourceURL, to: destinationURL, preferredEncoding: String.Encoding.utf8)
+            try fileManager.unzipItem(at: sourceURL, to: destinationURL, preferredEncoding: String.Encoding.shiftJIS)
           }
 
           DispatchQueue.main.async {
