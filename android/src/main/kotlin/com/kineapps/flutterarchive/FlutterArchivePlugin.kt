@@ -28,6 +28,8 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipEntry.DEFLATED
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
+import java.nio.charset.Charset
+
 
 enum class ExtractOperation { extract, skip, cancel }
 
@@ -339,5 +341,5 @@ class FlutterArchivePlugin : FlutterPlugin, MethodCallHandler {
 
     // This is needed because ZipFile implements Closeable only starting from API 19 and
     // we support >=16
-    class ZipFileEx(name: String?) : ZipFile(name), Closeable
+    class ZipFileEx(name: String?) : ZipFile(name, Charset.forName("SHIFT-JIS")), Closeable
 }
