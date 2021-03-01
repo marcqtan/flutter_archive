@@ -29,6 +29,8 @@ import java.util.zip.ZipEntry.DEFLATED
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 import java.nio.charset.Charset
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 
 enum class ExtractOperation { extract, skip, cancel }
@@ -238,7 +240,15 @@ class FlutterArchivePlugin : FlutterPlugin, MethodCallHandler {
 
         val uiScope = CoroutineScope(Dispatchers.Main)
 
-        ZipFileEx(zipFilePath).use { zipFile ->
+        var zipFile: ZipFile? = null
+
+        zipFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { //api >= 24
+            ZipFileEx(zipFilePath)
+        } else {
+            ZipFileExDefault(zipFilePath)
+        }
+
+        zipFile.use { zipFile ->
             val entriesCount = zipFile.size().toDouble()
             var currentEntryIndex = 0.0
             for (ze in zipFile.entries()) {
@@ -341,5 +351,8 @@ class FlutterArchivePlugin : FlutterPlugin, MethodCallHandler {
 
     // This is needed because ZipFile implements Closeable only starting from API 19 and
     // we support >=16
+    @RequiresApi(Build.VERSION_CODES.N)
     class ZipFileEx(name: String?) : ZipFile(name, Charset.forName("SHIFT-JIS")), Closeable
+
+    class ZipFileExDefault(name: String?) : ZipFile(name), Closeable
 }
